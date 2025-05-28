@@ -14,7 +14,7 @@
 - **Sistem Login**: Pengguna perlu login untuk mengakses hasil dan progres  
 - **Pelacakan Riwayat Tes**: Fitur statistik untuk memantau perubahan kondisi mental  
 - **Edukasi Emosi**: Tab khusus untuk belajar mengenali dan mengelola emosi  
-- **UI Modern**: Desain lembut dan responsif dengan tema pastel dan font *Nunito*
+- **UI Modern**: Desain lembut dan responsif dilengkapi dengan dark mode
 
 ---
 
