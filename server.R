@@ -98,13 +98,13 @@ function(input, output, session) {
   user_login <- reactiveValues(logged_in = FALSE, username = NULL)
   total_questions <- function(category) length(pertanyaan[[category]])
   
+  observe({
+    session$sendCustomMessage("setDarkMode", input$dark_mode)
+  })
+  
   current_q <- reactive({
     category <- rv$categories[rv$current_category]
     pertanyaan[[category]][[rv$current_question]]
-  })
-  
-  observe({
-    session$sendCustomMessage("setDarkMode", input$dark_mode)
   })
   
   observe({
@@ -223,29 +223,30 @@ function(input, output, session) {
           
           # MINI CARD untuk kategori (dengan warna & deskripsi)
           div(style = "margin-bottom: 20px;",
-              div(style = paste0(
-                "background-color: ",
-                switch(category,
-                       "anxiety" = "#E0F2FE",
-                       "depresi" = "#FEE2E2",
-                       "overthinking" = "#FEF9C3"),
-                "; border-radius: 12px; padding: 14px 20px; max-width: 320px;
-             box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
-              ),
-              div(style = "display: flex; align-items: center;",
-                  span(style = "font-size: 24px; margin-right: 12px;",
-                       switch(category,
-                              "anxiety" = "🧠",
-                              "depresi" = "💔",
-                              "overthinking" = "💭")),
-                  div(
-                    h4(style = "margin: 0; font-weight: 700; font-size: 24px;",
-                       switch(category,
-                              "anxiety" = "Anxiety",
-                              "depresi" = "Depresi",
-                              "overthinking" = "Overthinking"))
-                  )
-              ))
+              div(
+                class = "mini-category-card",  # <--- Tambahkan ini!
+                style = paste0(
+                  "background-color: ",
+                  switch(category,
+                         "anxiety" = "#E0F2FE",
+                         "depresi" = "#FEE2E2",
+                         "overthinking" = "#FEF9C3"),
+                  "; border-radius: 12px; padding: 14px 20px; max-width: 320px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
+                ),
+                div(style = "display: flex; align-items: center;",
+                    span(style = "font-size: 24px; margin-right: 12px;",
+                         switch(category,
+                                "anxiety" = "🧠",
+                                "depresi" = "💔",
+                                "overthinking" = "💭")),
+                    div(
+                      h4(style = "margin: 0; font-weight: 700; font-size: 24px;",
+                         switch(category,
+                                "anxiety" = "Anxiety",
+                                "depresi" = "Depresi",
+                                "overthinking" = "Overthinking"))
+                    )
+                ))
           ),
           
           # Progress bar
@@ -276,11 +277,10 @@ function(input, output, session) {
   output$login_ui <- renderUI({
     if (!user_login$logged_in) {
       tagList(
-        div(style = "
+        div(class = "login-card", style = "
         max-width: 420px;
         margin: 40px auto;
         padding: 30px;
-        background-color: #ffffff;
         border-radius: 16px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.05);",
             
@@ -565,47 +565,110 @@ function(input, output, session) {
     
     # Chart dalam modal
     output$resultDonut <- renderPlot({
+      is_dark <- isTRUE(input$dark_mode) # deteksi dark mode
+      
+      bg_col <- if (is_dark) "#222336" else "#fff"
+      fg_col <- if (is_dark) "#f4f4f9" else "#222"
+      grid_col <- if (is_dark) "#55596c" else "#bbb"
+      border_col <- if (is_dark) "#888ea8" else "#333"
+      
       df <- data.frame(
         Dimensi = c("Anxiety", "Depresi", "Overthinking"),
         Skor = c(anxiety_score, depresi_score, overthinking_score) * 5,
         Warna = c("#FF6B6B", "#4ECDC4", "#FF9F8E")
       )
       
-      par(mfrow = c(1, 3), mar = c(1, 1, 4, 1), cex.main = 1.5)
+      par(mfrow = c(1, 3), mar = c(1, 1, 4, 1), bg = bg_col)
       for (i in 1:3) {
         slices <- c(df$Skor[i], 100 - df$Skor[i])
-        lbls <- c("", "")
-        cols <- c(df$Warna[i], "#E5E7EB")
-        pie(slices, labels = lbls, col = cols, main = df$Dimensi[i], radius = 1,
-            init.angle = 90, border = NA)
-        symbols(0, 0, circles = 0.6, inches = FALSE, add = TRUE, bg = "white")
-        text(0, 0, df$Skor[i], cex = 1.5, font = 2)
+        cols <- c(df$Warna[i], grid_col)
+        # Set color judul pakai parameter 'col.main'
+        pie(
+          slices, labels = NA, col = cols, 
+          main = df$Dimensi[i],
+          col.main = fg_col, # judul donut
+          cex.main = 1.2,
+          radius = 1, 
+          init.angle = 90, 
+          border = NA
+        )
+        # Outline donut tengah dan text di tengah
+        symbols(0, 0, circles = 0.6, inches = FALSE, add = TRUE, bg = bg_col, fg = border_col)
+        text(0, 0, df$Skor[i], cex = 1.5, font = 2, col = fg_col)
       }
     })
   })
   
   output$mentalHealthHistory <- renderPlot({
-    req(user_login$logged_in)  # hanya tampil jika sudah login
+    req(user_login$logged_in)
     
     path <- paste0("data/riwayat_", user_login$username, ".rds")
-    
-    if (file.exists(path)) {
-      df <- readRDS(path)
-      
-      df_long <- tidyr::pivot_longer(
-        df,
-        cols = c(anxiety, depresi, overthinking),
-        names_to = "kategori",
-        values_to = "skor"
-      )
-      
-      ggplot(df_long, aes(x = waktu, y = skor, color = kategori)) +
-        geom_line(size = 1.2) +
-        geom_point(size = 2) +
-        labs(title = "Perkembangan Skor Mental Health",
-             x = "Waktu Tes", y = "Skor", color = "Kategori") +
-        theme_minimal(base_size = 13)
+    if (!file.exists(path)) {
+      plot.new()
+      title("Belum ada riwayat tes")
+      return()
     }
+    df <- readRDS(path)
+    print(df) # debug
+    str(df)   # debug
+    
+    if (nrow(df) == 0) {
+      plot.new()
+      title("Belum ada riwayat tes")
+      return()
+    }
+    
+    # Cek manual: Apakah semua kolom wajib ada?
+    needed <- c("anxiety", "depresi", "overthinking", "waktu")
+    if (!all(needed %in% names(df))) {
+      plot.new()
+      title("Data riwayat tidak valid/kolom hilang")
+      return()
+    }
+    
+    # Ubah ke long format untuk ggplot
+    library(tidyr)
+    library(ggplot2)
+    df_long <- tidyr::pivot_longer(
+      df,
+      cols = c(anxiety, depresi, overthinking),
+      names_to = "kategori",
+      values_to = "skor"
+    )
+    print(df_long) # debug
+    
+    if (nrow(df_long) == 0) {
+      plot.new()
+      title("Belum ada data tes")
+      return()
+    }
+    
+    # Fix: Pastikan waktu bisa diparse
+    df_long$waktu <- as.POSIXct(df_long$waktu)
+    if (all(is.na(df_long$waktu))) {
+      plot.new()
+      title("Waktu tidak valid di riwayat")
+      return()
+    }
+    
+    # Plot
+    ggplot(df_long, aes(x = waktu, y = skor, color = kategori, group = kategori)) +
+      geom_line(size = 1.2) +
+      geom_point(size = 2) +
+      labs(title = "Perkembangan Skor Mental Health",
+           x = "Waktu Tes", y = "Skor", color = "Kategori") +
+      theme_minimal(base_size = 13) +
+      theme(
+        plot.background = element_rect(fill = if (isTRUE(input$dark_mode)) "#222336" else "#fff", color = NA),
+        panel.background = element_rect(fill = if (isTRUE(input$dark_mode)) "#222336" else "#fff", color = NA),
+        text = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222"),
+        axis.text = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222"),
+        axis.title = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222"),
+        plot.title = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222", face = "bold"),
+        legend.background = element_rect(fill = if (isTRUE(input$dark_mode)) "#222336" else "#fff", color = NA),
+        legend.text = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222"),
+        legend.title = element_text(color = if (isTRUE(input$dark_mode)) "#f4f4f9" else "#222")
+      )
   })
   
   observeEvent(input$btn_backtes, {
@@ -667,8 +730,4 @@ function(input, output, session) {
     )
   })
 }
-
-
-
-
 
