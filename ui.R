@@ -71,9 +71,9 @@ ui <- dashboardPage(
       ),
       # Viewport buat responsive
       tags$meta(name = "viewport", content = "width=device-width, initial-scale=1"),
-      # Link ke CSS lokal
+      # Link ke CSS
       tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
-      # Link ke JS lokal
+      # Link ke JS
       tags$script(src = "custom.js")
     ),
     
