@@ -41,13 +41,13 @@
 
 ## Tim Pengembang
 Disusun oleh Kelompok 3 dari Program Studi Akuntansi, Fakultas Ekonomika dan Bisnis, Universitas Gadjah Mada:
-Mirza Rashid			              	(24/533584/EK/24869)
-M Lintang Maulana Zulfan	      	(24/539064/EK/25105)
-Muhammad Kemal Khoerul Muhlisin 	(24/541618/EK/25172)
-Muhammad Bintang Ramadhan		      (24/542408/EK/25241)
-Muhamad Andhika Rhandy 		        (24/542364/EK/25237)
-Ashlika Rizkiana Advianto		      (24/543035/EK/25273)
-Dahayu Anindhita Aisyfaa 		      (24/544885/EK/25334)
+- Mirza Rashid			              	(24/533584/EK/24869)
+- M Lintang Maulana Zulfan	      	(24/539064/EK/25105)
+- Muhammad Kemal Khoerul Muhlisin 	(24/541618/EK/25172)
+- Muhammad Bintang Ramadhan		      (24/542408/EK/25241)
+- Muhamad Andhika Rhandy 		        (24/542364/EK/25237)
+- Ashlika Rizkiana Advianto		      (24/543035/EK/25273)
+- Dahayu Anindhita Aisyfaa 		      (24/544885/EK/25334)
 
 Dosen pembimbing: Dr. Lukman Heryawan, S.T., M.T.
 
