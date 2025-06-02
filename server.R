@@ -730,4 +730,3 @@ function(input, output, session) {
     )
   })
 }
-
