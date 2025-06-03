@@ -19,17 +19,22 @@
 
 ### 1. Mendaftar dan Login
 - Buka aplikasi.
-- Klik **Daftar** untuk membuat akun baru.
-- Masuk menggunakan username dan password yang telah dibuat.
+- Klik **Profil Pengguna** dan **Daftar** untuk membuat akun baru.
+- **Login** menggunakan username dan password yang telah dibuat.
+- Catatan: Anda tetap dapat menggunakan fitur utama aplikasi tanpa login. Namun, login diperlukan jika ingin:
+  - Menyimpan data hasil tes.
+  - Melihat riwayat perkembangan skor dari waktu ke waktu.
+  - Mengakses rekomendasi yang lebih personal.
 
 ### 2. Melakukan Tes
 - Klik tab **Mental Health Checkup**.
 - Jawab seluruh pertanyaan untuk 3 kategori: **Anxiety**, **Depresi**, **Overthinking**.
 - Klik **Submit** untuk melihat hasil analisis.
 
-### 3. Melihat Hasil dan Riwayat
+### 3. Melihat Hasil dan Riwayat (Login diperlukan)
 - Buka tab **Profil Pengguna**.
 - Lihat skor mental health terakhir, histori tes, dan tren progres dalam bentuk grafik.
+- Mengubah informasi pribadi
 - Akses rekomendasi tindakan berdasarkan hasil tes.
 
 > **Disclaimer**: Aplikasi ini bukan alat diagnosis medis. Untuk konsultasi lebih lanjut, hubungi profesional kesehatan mental.
